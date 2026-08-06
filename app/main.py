@@ -2,7 +2,7 @@ import sys
 
 
 def main():
-    #RPL loop
+    #REPL loop
     while True:
         sys.stdout.write("$ ")
 
@@ -10,10 +10,17 @@ def main():
         
         #if command == exit stop the shell. temp solution using lower case for now until
         #I learn more about shell behavior
-        if command.lower() == "exit":
+
+        #naive parsing (not sure, but probably)
+
+        command = command.split(" ")
+
+        if command[0] == "exit":
             break
-        
-        print(f"{command}: command not found")
+        elif command[0] == "echo":
+            print(" ".join(command[1:]))
+        else:
+            print(f"{command[0]}: command not found")
         pass
 
 
