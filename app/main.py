@@ -1,6 +1,21 @@
 import sys
 
 
+BUILT_INS = {"exit": True,
+             "echo": True,
+              "type": True }
+
+def handle_command(command):
+    if command[0] == "echo":
+        print(" ".join(command[1:]))
+    elif command[0] == "type":
+        if command[1] in BUILT_INS:
+            print(f"{command[1]} is a shell builtin")
+        else:
+            print(f"{command[1]}: not found")
+    else:
+        print(f"{command[0]}: command not found")#tmp command not found
+
 def main():
     #REPL loop
     while True:
@@ -17,10 +32,10 @@ def main():
 
         if command[0] == "exit":
             break
-        elif command[0] == "echo":
-            print(" ".join(command[1:]))
+        elif command[0] == "":
+            continue
         else:
-            print(f"{command[0]}: command not found")
+            handle_command(command)
         pass
 
 
