@@ -1,5 +1,8 @@
 import sys
+import os
 
+path = os.environ.get('PATH','')
+dirs = path.split(os.pathsep)
 
 BUILT_INS = {"exit": True,
              "echo": True,
@@ -12,6 +15,17 @@ def handle_command(command):
         if command[1] in BUILT_INS:
             print(f"{command[1]} is a shell builtin")
         else:
+            for dir in dirs:
+                #Check if a file with the command name exist,
+                    #check for execute permision
+                    #print <command> full path if execute pernussion
+                    #return
+                file = os.path.join(dir, command[1])
+                if os.path.exists(file):
+                    if os.access(file, os.X_OK):
+                        print(f"{command[1]} is {file}")
+                        return
+                        
             print(f"{command[1]}: not found")
     else:
         print(f"{command[0]}: command not found")#tmp command not found
