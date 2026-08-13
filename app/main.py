@@ -8,7 +8,8 @@ dirs = [Path(p) for p in path_var.split(os.pathsep)]
 
 BUILT_INS = {"exit": True,
              "echo": True,
-              "type": True }
+              "type": True,
+               "pwd": True }
 
 def is_executable(path):
     """Determines if we have a file instead of a dir
@@ -20,7 +21,7 @@ def is_executable(path):
     return False
 
 
-def handle_command(cmd, args):
+def handle_command(cmd, args, exec):
     if cmd == "echo":
         print(" ".join(args))
     elif cmd == "type":
@@ -40,12 +41,15 @@ def handle_command(cmd, args):
                         
         else:
             print(f"{args}: not found")#prints when args is empty
+
+    elif cmd == "pwd":
+        print(f"{Path.cwd()}")
     else:
         for dir in dirs:
             dir = dir / cmd
             if is_executable(dir):
                 try:
-                    subprocess.run([cmd])
+                    subprocess.run(exec)
                     return
                 except subprocess.CalledProcessError as e:
                     print(f"Command failed with exit code {e.returncode}")
@@ -70,10 +74,11 @@ def main():
 
         args = command[1:] if len(command) > 1 else ""
 
+
         if cmd == "exit":
             break
         else:
-            handle_command(cmd,args)
+            handle_command(cmd,args,command)
         pass
 
 
