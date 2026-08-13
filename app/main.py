@@ -11,32 +11,35 @@ BUILT_INS = {"exit": True,
               "type": True,
                "pwd": True }
 
-def is_executable(path):
-    """Determines if we have a file instead of a dir
-       and if the file has execute permision
+def is_executable(path,c):
     """
-    if path.is_file():
-        if os.access(path, os.X_OK):
-            return True
-    return False
+        Loops through dirs in PATH and adds the "cmd" to the path
+        if this path resolves to an executable we return the full
+        path else return an empty string
+    """
+    for p in path:
+        p = p/c
+        if p.is_file():
+            if os.access(p, os.X_OK):
+                return p
+    return ""
 
 
 def handle_command(cmd, args, exec):
     if cmd == "echo":
         print(" ".join(args))
+
     elif cmd == "type":
+        #if arguments were given check if its a built in
         if args and args[0] in BUILT_INS:
             print(f"{args[0]} is a shell builtin")
+        #if is not a built in check if it exist in PATH and return the full PATH
+        #else pring that the command given was not found
         elif args:
-            #Check if a file with the command name exist,
-                #check for execute permision
-                    #print <command> full path if execute pernussion
-                    #return
-            for dir in dirs:
-                dir = dir / args[0]
-                if is_executable(dir):
-                    print(f"{args[0]} is {dir}")
-                    return
+            if p:= is_executable(dirs,args[0]):
+                print(f"{args[0]} is {p}")
+                return
+
             print(f"{args[0]}: not found") #prints when args is not empty and the built in command does not exist
                         
         else:
@@ -44,16 +47,18 @@ def handle_command(cmd, args, exec):
 
     elif cmd == "pwd":
         print(f"{Path.cwd()}")
-    else:
-        for dir in dirs:
-            dir = dir / cmd
-            if is_executable(dir):
-                try:
-                    subprocess.run(exec)
-                    return
-                except subprocess.CalledProcessError as e:
-                    print(f"Command failed with exit code {e.returncode}")
-                    print(f"Error message: {e.stderr}")
+
+
+    else: 
+        #No built in command found check PATH
+        #If it exist in path execute, otherwise print command not found
+        if is_executable(dirs,cmd):
+            try:
+                subprocess.run(exec)
+                return
+            except subprocess.CalledProcessError as e:
+                print(f"Command failed with exit code {e.returncode}")
+                print(f"Error message: {e.stderr}")
         print(f"{cmd}: command not found")#tmp command not found
 
 def main():
