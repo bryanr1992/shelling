@@ -53,7 +53,11 @@ def handle_command(cmd, args, exec):
         p = Path.cwd()
         p = p / args[0]
 
-        if p.is_dir():
+        #Check if the arg on CD is ~ and go to the home dir if it is
+        if args[0] == "~":
+            os.chdir(Path.home())
+            return
+        elif p.is_dir():
             os.chdir(p)
             return
         print(f"cd: {p}: No such file or directory")
