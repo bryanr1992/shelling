@@ -9,7 +9,8 @@ dirs = [Path(p) for p in path_var.split(os.pathsep)]
 BUILT_INS = {"exit": True,
              "echo": True,
               "type": True,
-               "pwd": True }
+               "pwd": True,
+                "cd": True }
 
 def is_executable(path,c):
     """
@@ -48,7 +49,15 @@ def handle_command(cmd, args, exec):
     elif cmd == "pwd":
         print(f"{Path.cwd()}")
 
+    elif cmd == "cd":
+        p = Path.cwd()
+        p = p / args[0]
 
+        if p.is_dir():
+            os.chdir(p)
+            return
+        print(f"cd: {p}: No such file or directory")
+        return
     else: 
         #No built in command found check PATH
         #If it exist in path execute, otherwise print command not found
