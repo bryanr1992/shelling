@@ -31,25 +31,27 @@ def handle_command(cmd, args, exec):
         print(" ".join(args))
 
     elif cmd == "type":
+        if not args:
+            print(f"{args}: not found")
+            return
         #if arguments were given check if its a built in
-        if args and args[0] in BUILT_INS:
+        if args[0] in BUILT_INS:
             print(f"{args[0]} is a shell builtin")
         #if is not a built in check if it exist in PATH and return the full PATH
         #else pring that the command given was not found
-        elif args:
-            if p:= is_executable(dirs,args[0]):
-                print(f"{args[0]} is {p}")
-                return
-
-            print(f"{args[0]}: not found") #prints when args is not empty and the built in command does not exist
-                        
+        elif p:= is_executable(dirs,args[0]):
+            print(f"{args[0]} is {p}")
+            return
         else:
-            print(f"{args}: not found")#prints when args is empty
+            print(f"{args[0]}: not found") #prints when args is not empty and the built in command does not exist
 
     elif cmd == "pwd":
         print(f"{Path.cwd()}")
 
     elif cmd == "cd":
+        if not args:
+            print(f"{cmd}: no arguments given to command")
+            return
         p = Path.cwd()
         p = p / args[0]
 
