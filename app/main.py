@@ -77,6 +77,48 @@ def handle_command(cmd, args, exec):
                 print(f"Error message: {e.stderr}")
         print(f"{cmd}: command not found")#tmp command not found
 
+def parser(string):
+    i = 0
+    single_quotes = False
+    scape = False
+    args = []
+    current_arg = []
+
+    while i < len(string):
+        char = string[i]
+
+        if scape and not single_quotes:
+            current_arg.append(char)
+            i += 1
+            scape = True
+            continue
+
+        if char == '\\' and not single_quotes:
+            scape = not scape
+            i+= 1
+            continue
+
+        if char == "'":
+            single_quotes = not single_quotes
+            i += 1
+            continue
+
+        if char.isspace() and not single_quotes:
+            if current_arg:
+                args.append(''.join(current_arg))
+                current_arg = []
+            i += 1
+            continue
+
+        #add char
+        current_arg.append(char)
+        i += 1
+
+    #if remaining arg append it
+    if current_arg:
+        args.append(''.join(current_arg))
+    return args
+
 def main():
     #REPL loop
     while True:
@@ -88,8 +130,7 @@ def main():
         if not command:
             continue
         #naive parsing (not sure, but probably)
-
-        command = shlex.split(command)
+        command = parser(command)
 
         cmd = command[0]
 
@@ -100,7 +141,6 @@ def main():
             break
         else:
             handle_command(cmd,args,command)
-        pass
 
 
 if __name__ == "__main__":
