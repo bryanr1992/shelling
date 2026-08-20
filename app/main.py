@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import shlex
 from pathlib import Path
 
 path_var = os.environ.get('PATH','')
@@ -88,7 +89,7 @@ def main():
             continue
         #naive parsing (not sure, but probably)
 
-        command = command.split(" ")
+        command = shlex.split(command)
 
         cmd = command[0]
 
