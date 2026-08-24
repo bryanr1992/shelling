@@ -80,6 +80,7 @@ def handle_command(cmd, args, exec):
 def parser(string):
     i = 0
     single_quotes = False
+    double_quotes = False
     scape = False
     args = []
     current_arg = []
@@ -90,7 +91,7 @@ def parser(string):
         if scape and not single_quotes:
             current_arg.append(char)
             i += 1
-            scape = True
+            scape = False
             continue
 
         if char == '\\' and not single_quotes:
@@ -98,12 +99,17 @@ def parser(string):
             i+= 1
             continue
 
-        if char == "'":
+        if char == "'" and not double_quotes:
             single_quotes = not single_quotes
             i += 1
             continue
 
-        if char.isspace() and not single_quotes:
+        if char == '"' and not single_quotes:
+            double_quotes = not double_quotes
+            i += 1
+            continue
+
+        if char.isspace() and not single_quotes and not double_quotes:
             if current_arg:
                 args.append(''.join(current_arg))
                 current_arg = []
