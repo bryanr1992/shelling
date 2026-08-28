@@ -58,6 +58,9 @@ def handle_command(cmd, args, exec):
             # print("Wrote to file")
         return
     if ">>" in exec or "1>>" in exec:
+        #TODO:
+        #Better splitting logic Not sure on how to go about it yet
+        #Verify if our writing directory is a valid directory or at least formatted correctly
         source = []
         if "1>>" in exec:
             dest = ''.join(args).split("1>>")
@@ -70,6 +73,19 @@ def handle_command(cmd, args, exec):
         with open(dest[1], "a", encoding="utf-8") as file:
             subprocess.run(source, stdout=file)
             # print("Wrote to file")
+        return
+    if "2>>" in exec:
+        #TODO:
+        #Better splitting logic Not sure on how to go about it yet
+        #Verify if our writing directory is a valid directory or at least formatted correctly
+        source = []
+        dest = ''.join(args).split("2>>")
+        for arg in exec:
+            if arg == "2>>":
+                break
+            source.append(arg)
+        with open(dest[1], "a", encoding="utf-8") as file:
+            subprocess.run(source, stderr=file)
         return
     if cmd == "echo":
         print(" ".join(args))
