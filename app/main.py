@@ -1,7 +1,6 @@
 import sys
 import os
 import subprocess
-import shlex
 from pathlib import Path
 
 path_var = os.environ.get('PATH','')
@@ -28,6 +27,22 @@ def is_executable(path,c):
 
 
 def handle_command(cmd, args, exec):
+    #TODO:
+    #Better splitting logic Not sure on how to go about it yet
+    #Verify if our writing directory is a valid directory or at least formatted correctly
+    if ">" in exec or "1>" in exec:
+        source = []
+        if "1>" in exec:
+            dest = ''.join(args).split("1>")
+        else:
+            dest = ''.join(args).split(">")
+        for arg in exec:
+            if arg == ">" or arg == "1>":
+                break
+            source.append(arg)
+        with open(dest[1], "w", econdign="utf-8") as file:
+            subprocess.run(source, stdout=file)
+        return
     if cmd == "echo":
         print(" ".join(args))
 
