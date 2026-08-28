@@ -57,6 +57,20 @@ def handle_command(cmd, args, exec):
             subprocess.run(source, stderr=file)
             # print("Wrote to file")
         return
+    if ">>" in exec or "1>>" in exec:
+        source = []
+        if "1>>" in exec:
+            dest = ''.join(args).split("1>>")
+        else:
+            dest = ''.join(args).split(">>")
+        for arg in exec:
+            if arg == ">>" or arg == "1>>":
+                break
+            source.append(arg)
+        with open(dest[1], "a", encoding="utf-8") as file:
+            subprocess.run(source, stdout=file)
+            # print("Wrote to file")
+        return
     if cmd == "echo":
         print(" ".join(args))
 
