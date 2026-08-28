@@ -43,6 +43,20 @@ def handle_command(cmd, args, exec):
         with open(dest[1], "w", econdign="utf-8") as file:
             subprocess.run(source, stdout=file)
         return
+    if "2>" in exec:
+        #TODO:
+        #Better splitting logic Not sure on how to go about it yet
+        #Verify if our writing directory is a valid directory or at least formatted correctly
+        source = []
+        dest = ''.join(exec).split("2>")
+        for arg in exec:
+            if arg == "2>":
+                break
+            source.append(arg)
+        with open(dest[1], "w", encoding="utf-8") as file:
+            subprocess.run(source, stderr=file)
+            # print("Wrote to file")
+        return
     if cmd == "echo":
         print(" ".join(args))
 
