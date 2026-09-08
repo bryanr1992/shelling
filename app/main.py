@@ -19,6 +19,11 @@ def completer(text, state):
     """
     opts = [c for c in BUILT_INS if c.startswith(text)]
 
+    if not opts:
+        if state == 0:
+            print("\a", end="", flush=True)
+        return None
+    
     if state < len(opts):
         return opts[state] + " "
     return None
