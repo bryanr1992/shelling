@@ -1,3 +1,4 @@
+import readline
 import sys
 import os
 import subprocess
@@ -11,6 +12,16 @@ BUILT_INS = {"exit": True,
               "type": True,
                "pwd": True,
                 "cd": True }
+def completer(text, state):
+    """
+    Implementation of the complete function for the
+    readline module
+    """
+    opts = [c for c in BUILT_INS if c.startswith(text)]
+
+    if state < len(opts):
+        return opts[state] + " "
+    return None
 
 def is_executable(path,c):
     """
@@ -189,6 +200,9 @@ def main():
     while True:
         sys.stdout.write("$ ")
         sys.stdout.flush()
+
+        readline.set_completer(completer)
+        readline.parse_and_bind("tab: complete")
 
         command = input().strip()
 
