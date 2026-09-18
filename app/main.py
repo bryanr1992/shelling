@@ -46,7 +46,9 @@ def completer(text, state):
         return None
     
     if state < len(opts):
-        return opts[state] + " "
+        if len(opts) == 1:
+            return opts[state] + " "
+        return opts[state] 
 
     return None
 
@@ -78,7 +80,7 @@ def handle_command(cmd, args, exec):
             if arg == ">" or arg == "1>":
                 break
             source.append(arg)
-        with open(dest[1], "w", econdign="utf-8") as file:
+        with open(dest[1], "w", encoding="utf-8") as file:
             subprocess.run(source, stdout=file)
         return
     if "2>" in exec:
@@ -225,13 +227,11 @@ def parser(string):
 def main():
     #REPL loop
     while True:
-        sys.stdout.write("$ ")
-        sys.stdout.flush()
 
         readline.set_completer(completer)
         readline.parse_and_bind("tab: complete")
 
-        command = input().strip()
+        command = input("$ ").strip()
 
         if not command:
             continue
