@@ -4,8 +4,24 @@ import os
 import subprocess
 from pathlib import Path
 
+def helper_getPathExec():
+    """
+    This helper function will go through every directory in path and
+    append the file names of executable files
+    """
+    ans = []
+    for p in dirs:
+        try:
+            for f in p.iterdir():
+                if os.access(p / f, os.X_OK):
+                    ans.append(f.name)
+        except FileNotFoundError:
+            continue
+    return ans
+
 path_var = os.environ.get('PATH','')
 dirs = [Path(p) for p in path_var.split(os.pathsep)]
+path_opts = helper_getPathExec()#get the name of executable files to use with the completer function
 
 BUILT_INS = {"exit": True,
              "echo": True,
@@ -17,7 +33,12 @@ def completer(text, state):
     Implementation of the complete function for the
     readline module
     """
-    opts = [c for c in BUILT_INS if c.startswith(text)]
+    temp_opts = [c for c in BUILT_INS]
+    combined = set(temp_opts + path_opts)
+    #TODO: Load all commads on startup instead of using the completer function
+    #      it's in completer function at the moment ust to test functionality
+
+    opts = [c for c in combined if c.startswith(text)]
 
     if not opts:
         if state == 0:
@@ -26,6 +47,7 @@ def completer(text, state):
     
     if state < len(opts):
         return opts[state] + " "
+
     return None
 
 def is_executable(path,c):
